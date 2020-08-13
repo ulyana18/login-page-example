@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TextField } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import './App.css';
 
 
@@ -10,13 +11,15 @@ class App extends Component {
     this.state = {
       nameValue: '',
       loginValue: '',
-      passwordValue: '', 
+      passwordValue: '',
+      method: 'Log In',
     }
     this.signUp = this.signUp.bind(this);
     this.logIn = this.logIn.bind(this);
     this.nameChange = this.nameChange.bind(this);
     this.emailChange = this.emailChange.bind(this);
     this.passwordChange = this.passwordChange.bind(this);
+    this.methodChange = this.methodChange.bind(this);
   }
 
   callApi(method) {
@@ -64,18 +67,27 @@ class App extends Component {
       passwordValue: event.target.value,
     });
   }
+  methodChange() {
+    switch(this.state.method) {
+      case 'Log In': this.setState({method: 'Sign Up'}); break;
+      case 'Sign Up': this.setState({method: 'Log In'}); break;
+      default: break;
+    }
+  }
 
 
   render() {
 
     return (
       <div className="App">
+        {this.state.method === 'Log In' &&
         <div className="signup-container">
           <form className="signup-form" noValidate autoComplete="off">
             <TextField required
               id="standard-required" 
               label="Name" 
-              onChange={this.nameChange}  
+              onChange={this.nameChange}
+              margin="dense"
             />
             <TextField required
               id="standard-required" 
@@ -89,14 +101,20 @@ class App extends Component {
               autoComplete="current-password"
               onChange={this.passwordChange}
             />
-            <Button 
-              onClick={this.signUp} // the same function for onKeyDown.Enter
-              className="signUpBtn" 
-              variant="contained"
-            >Sign Up</Button>
+            <Box m={2}>
+              <Button 
+                onClick={this.signUp} // the same function for onKeyDown.Enter
+                className="signUpBtn" 
+                variant="contained"
+              >
+                Sign Up
+              </Button>
+            </Box>
           </form>
-        </div>
-        <div className="login-container">
+        </div>}
+
+      {this.state.method === 'Sign Up' && 
+      <div className="login-container">
         <form className="login-form" noValidate autoComplete="off">
             <TextField required
               id="standard-required" 
@@ -110,15 +128,28 @@ class App extends Component {
               autoComplete="current-password"
               onChange={this.passwordChange}
             />
-            <Button 
-              onClick={this.logIn} // the same function for onKeyDown.Enter
-              className="logInBtn" 
-              variant="contained"
-            >Log In</Button>
+            <Box m={2}>
+              <Button 
+                onClick={this.logIn} // the same function for onKeyDown.Enter
+                className="logInBtn" 
+                variant="contained"
+              >
+                Log In
+              </Button>
+            </Box>
           </form>
 
-        </div>
-      </div>
+      </div>}
+      <Box m={3}>
+        <Button
+          onClick={this.methodChange}
+          variant="contained"
+          className="methodBtn"
+        >
+          {this.state.method}
+        </Button>
+      </Box>
+    </div>
     );
   }
 }

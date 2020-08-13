@@ -8,16 +8,16 @@ class AuthService {
     }
 
     async SignUp(name, email, password) {
-        const passwordHashed = this.hashPassword;
+        const passwordHashed = this.hashPassword(password);
 
         await pool.query('SELECT * FROM users WHERE email = $1', [email])
             .then(result =>{ 
-                if (result.rows.length === 0) {
-                    return pool.query('INSERT INTO users (email, password, name) VALUES ($1, $2, $3)',
-                        [email, passwordHashed, name]
-                    );
+                if (result.rows.length !== 0) {
+                    throw new Error;
                 }
-                throw new Error;
+                pool.query('INSERT INTO users (email, password, name) VALUES ($1, $2, $3)',
+                    [email, passwordHashed, name]
+                );
             })
             .catch(function(err) {
                 throw new Error;
